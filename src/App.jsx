@@ -1,5 +1,7 @@
+import Home from './pages/Home';
+
 const App = () => {
-	return <div className="text-3xl">App</div>;
+	return <Home />;
 };
 
 export default App;
