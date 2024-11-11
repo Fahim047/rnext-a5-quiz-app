@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import SalyImage from '../assets/Saly-1.png';
 const Login = () => {
 	return (
@@ -79,9 +80,9 @@ const Login = () => {
 						<div className="mt-8">
 							<p className="text-center">
 								No Account ?{' '}
-								<a href="#" className="text-primary">
+								<Link to="/signup" className="text-primary">
 									Sign up
-								</a>
+								</Link>
 							</p>
 						</div>
 					</div>

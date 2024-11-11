@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
+import Layout from '../Layout';
 import Home from '../pages/Home';
 import LeaderBoard from '../pages/Leaderboard';
 import Login from '../pages/Login';
@@ -12,8 +13,27 @@ import QuizSetPage from '../pages/admin/quiz-set-page';
 const router = createBrowserRouter([
 	{
 		path: '/',
-		element: <Home />,
+		element: <Layout />,
+		children: [
+			{
+				index: true,
+				element: <Home />,
+			},
+			{
+				path: '/quiz',
+				element: <QuizPage />,
+			},
+			{
+				path: '/result',
+				element: <Result />,
+			},
+			{
+				path: '/leaderboard',
+				element: <LeaderBoard />,
+			},
+		],
 	},
+
 	{
 		path: '/login',
 		element: <Login />,
@@ -21,18 +41,6 @@ const router = createBrowserRouter([
 	{
 		path: '/signup',
 		element: <Registration />,
-	},
-	{
-		path: '/quiz',
-		element: <QuizPage />,
-	},
-	{
-		path: '/result',
-		element: <Result />,
-	},
-	{
-		path: '/leaderboard',
-		element: <LeaderBoard />,
 	},
 	{
 		path: '/admin/dashboard',

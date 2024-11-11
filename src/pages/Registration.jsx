@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import Logo from '../assets/logo.svg';
 import SalyImage from '../assets/Saly-1.png';
 const Registration = () => {
@@ -113,9 +114,9 @@ const Registration = () => {
 						<div className="mt-2 text-gray-400">
 							<p className="text-center">
 								Already have account ?{' '}
-								<a href="#" className="text-primary">
+								<Link to="/login" className="text-primary">
 									Sign In
-								</a>
+								</Link>
 							</p>
 						</div>
 					</div>
