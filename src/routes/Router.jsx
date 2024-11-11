@@ -5,6 +5,9 @@ import Login from '../pages/Login';
 import QuizPage from '../pages/QuizPage';
 import Registration from '../pages/Registration';
 import Result from '../pages/Result';
+import Dashboard from '../pages/admin/Dashboard';
+import QuizSetEntryPage from '../pages/admin/quiz-set-entry-page';
+import QuizSetPage from '../pages/admin/quiz-set-page';
 
 const router = createBrowserRouter([
 	{
@@ -30,6 +33,18 @@ const router = createBrowserRouter([
 	{
 		path: '/leaderboard',
 		element: <LeaderBoard />,
+	},
+	{
+		path: '/admin/dashboard',
+		element: <Dashboard />,
+	},
+	{
+		path: '/admin/quiz-entry',
+		element: <QuizSetEntryPage />,
+	},
+	{
+		path: '/admin/quiz-set',
+		element: <QuizSetPage />,
 	},
 ]);
 export default router;
