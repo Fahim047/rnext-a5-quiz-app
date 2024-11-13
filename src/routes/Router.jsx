@@ -1,14 +1,16 @@
 import { createBrowserRouter } from 'react-router-dom';
+import AdminLayout from '../AdminLayout';
 import Layout from '../Layout';
-import Home from '../pages/Home';
-import LeaderBoard from '../pages/Leaderboard';
-import Login from '../pages/Login';
-import QuizPage from '../pages/QuizPage';
-import Registration from '../pages/Registration';
-import Result from '../pages/Result';
 import Dashboard from '../pages/admin/Dashboard';
 import QuizSetEntryPage from '../pages/admin/quiz-set-entry-page';
 import QuizSetPage from '../pages/admin/quiz-set-page';
+import Home from '../pages/Home';
+import LeaderBoard from '../pages/Leaderboard';
+import Login from '../pages/Login';
+import Logout from '../pages/Logout';
+import QuizPage from '../pages/QuizPage';
+import Registration from '../pages/Registration';
+import Result from '../pages/Result';
 
 const router = createBrowserRouter([
 	{
@@ -20,7 +22,7 @@ const router = createBrowserRouter([
 				element: <Home />,
 			},
 			{
-				path: '/quiz',
+				path: '/quizzes/:quizSetId',
 				element: <QuizPage />,
 			},
 			{
@@ -33,7 +35,28 @@ const router = createBrowserRouter([
 			},
 		],
 	},
-
+	{
+		path: '/admin/dashboard',
+		element: <AdminLayout />,
+		children: [
+			{
+				index: true,
+				element: <Dashboard />,
+			},
+			{
+				path: 'quiz-set-entry-page',
+				element: <QuizSetEntryPage />,
+			},
+			{
+				path: 'quiz-set',
+				element: <QuizSetPage />,
+			},
+			{
+				path: '*',
+				element: <h2>hello</h2>,
+			},
+		],
+	},
 	{
 		path: '/login',
 		element: <Login />,
@@ -43,16 +66,8 @@ const router = createBrowserRouter([
 		element: <Registration />,
 	},
 	{
-		path: '/admin/dashboard',
-		element: <Dashboard />,
-	},
-	{
-		path: '/admin/quiz-entry',
-		element: <QuizSetEntryPage />,
-	},
-	{
-		path: '/admin/quiz-set',
-		element: <QuizSetPage />,
+		path: '/logout',
+		element: <Logout />,
 	},
 ]);
 export default router;

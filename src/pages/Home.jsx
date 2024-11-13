@@ -1,9 +1,13 @@
+import { Link } from 'react-router-dom';
 import BackgroundImage1 from '../assets/backgrounds/1.jpeg';
 import BackgroundImage2 from '../assets/backgrounds/2.jpg';
 import BackgroundImage3 from '../assets/backgrounds/3.jpg';
 import BackgroundImage5 from '../assets/backgrounds/5.jpg';
 import Greetings from '../components/Greetings';
+import { useAuth } from '../hooks';
 const Home = () => {
+	const { auth } = useAuth();
+	console.log(auth);
 	return (
 		<>
 			<Greetings />
@@ -13,8 +17,8 @@ const Home = () => {
 
 					{/* <!-- Cards --> */}
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
-						<a
-							href="./result.html"
+						<Link
+							to={`/quizzes/1`}
 							className="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow max-h-[450px] relative group cursor-pointer"
 						>
 							<div className="group-hover:scale-105 absolute transition-all text-white  text-center top-1/2 -translate-y-1/2 px-4">
@@ -38,7 +42,7 @@ const Home = () => {
 								alt="JavaScript Hoisting"
 								className="w-full h-full object-cover rounded mb-4"
 							/>
-						</a>
+						</Link>
 
 						<a
 							href="./quiz_page.html"
