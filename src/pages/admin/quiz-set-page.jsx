@@ -1,29 +1,52 @@
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import ArrowLeft from '../../components/icons/ArrowLeft';
+import { useAxios } from '../../hooks';
 
+// response will be like this
+// {
+// 	"status": "success",
+// 	"data": {
+// 			"id": "98a0bbbd-27a0-457b-8699-4c348a9256f4",
+// 			"status": "draft",
+// 			"title": "React.js Fundamentals",
+// 			"description": "Test your knowledge of JavaScript basics with quizzes that cover essential concepts, syntax, and foundational programming skills",
+// 			"thumbnail": "http://localhost:5000/images/7.jpg",
+// 			"userId": "00176b41-c9af-48b4-b792-ad3128f02ffa",
+// 			"updatedAt": "2024-11-14T06:59:30.645Z",
+// 			"createdAt": "2024-11-14T06:59:30.645Z"
+// 	}
+// }
 const QuizSetPage = () => {
+	const { api } = useAxios();
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		setError,
+	} = useForm();
+	const handleCreateQuizSet = async (formData) => {
+		const formattedData = {
+			title: formData['quiz-title'],
+			description: formData['quiz-description'],
+		};
+		console.log(formattedData);
+		const response = await api.post('/api/admin/quizzes', formattedData);
+		if (response.status === 201) {
+			const data = response.data;
+			console.log(data);
+			// navigate('/admin/quiz-set-entry-page/');
+		}
+	};
 	return (
 		<main className="md:flex-grow px-4 sm:px-6 lg:px-8 py-8">
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-				{/* <!-- Left Column --> */}
 				<div>
 					<Link
-						to="/admin/dashboard"
+						to="/admin"
 						className="inline-flex items-center text-sm text-gray-600 mb-6 hover:text-buzzr-purple"
 					>
-						<svg
-							className="w-4 h-4 mr-2"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth="2"
-								d="M10 19l-7-7m0 0l7-7m-7 7h18"
-							></path>
-						</svg>
+						<ArrowLeft />
 						Back to home
 					</Link>
 
@@ -31,7 +54,7 @@ const QuizSetPage = () => {
 						Give your quiz title and description
 					</h2>
 
-					<form>
+					<form onSubmit={handleSubmit(handleCreateQuizSet)}>
 						<div className="mb-4">
 							<label
 								htmlFor="quiz-title"
@@ -40,6 +63,7 @@ const QuizSetPage = () => {
 								Quiz title
 							</label>
 							<input
+								{...register('quiz-title', { required: 'Title is required' })}
 								type="text"
 								id="quiz-title"
 								name="quiz-title"
@@ -47,7 +71,6 @@ const QuizSetPage = () => {
 								placeholder="Quiz"
 							/>
 						</div>
-
 						<div className="mb-6">
 							<label
 								htmlFor="quiz-description"
@@ -56,6 +79,7 @@ const QuizSetPage = () => {
 								Description (Optional)
 							</label>
 							<textarea
+								{...register('quiz-description')}
 								id="quiz-description"
 								name="quiz-description"
 								rows="4"
@@ -64,13 +88,12 @@ const QuizSetPage = () => {
 							></textarea>
 						</div>
 
-						<Link
-							to="../quiz-set-entry-page"
+						<button
 							type="submit"
 							className="w-full block text-center bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
 						>
 							Next
-						</Link>
+						</button>
 					</form>
 				</div>
 			</div>

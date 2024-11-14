@@ -6,22 +6,22 @@ const sidebarLinks = [
 	{
 		id: 1,
 		title: 'Quizzes',
-		route: '/admin/dashboard',
+		route: '/admin',
 	},
 	{
 		id: 2,
 		title: 'Settings',
-		route: '/admin/dashboard/settings',
+		route: '/admin/settings',
 	},
 	{
 		id: 3,
 		title: 'Manage Users',
-		route: '/admin/dashboard/manage-users',
+		route: '/admin/manage-users',
 	},
 	{
 		id: 4,
 		title: 'Manage Roles',
-		route: '/admin/dashboard/manage-roles',
+		route: '/admin/manage-roles',
 	},
 ];
 const AdminSidebar = () => {

@@ -7,11 +7,9 @@ import QuizSetPage from '../pages/admin/quiz-set-page';
 import Home from '../pages/Home';
 import LeaderBoard from '../pages/Leaderboard';
 import Login from '../pages/Login';
-import Logout from '../pages/Logout';
 import QuizPage from '../pages/QuizPage';
 import Registration from '../pages/Registration';
 import Result from '../pages/Result';
-
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -36,7 +34,7 @@ const router = createBrowserRouter([
 		],
 	},
 	{
-		path: '/admin/dashboard',
+		path: '/admin',
 		element: <AdminLayout />,
 		children: [
 			{
@@ -44,12 +42,17 @@ const router = createBrowserRouter([
 				element: <Dashboard />,
 			},
 			{
-				path: 'quiz-set-entry-page',
-				element: <QuizSetEntryPage />,
+				path: 'quiz-set/create',
+				element: <QuizSetPage />,
 			},
 			{
-				path: 'quiz-set',
+				path: 'quiz-set/:quizSetId',
 				element: <QuizSetPage />,
+			},
+			{
+				path: 'quiz-set-entry-page/:quizSetId',
+				element: <QuizSetEntryPage />,
+				// loader: getQuizSetEntryPageAction,
 			},
 			{
 				path: '*',
@@ -64,10 +67,6 @@ const router = createBrowserRouter([
 	{
 		path: '/signup',
 		element: <Registration />,
-	},
-	{
-		path: '/logout',
-		element: <Logout />,
 	},
 ]);
 export default router;

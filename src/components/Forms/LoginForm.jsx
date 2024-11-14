@@ -27,7 +27,7 @@ const LoginForm = () => {
 					console.log(`Login successful, token: ${authToken}`);
 					setAuth({ user, authToken, refreshToken });
 					if (user?.role === 'admin' && formData.admin) {
-						navigate('/admin/dashboard');
+						navigate('/admin');
 					} else {
 						navigate('/');
 					}

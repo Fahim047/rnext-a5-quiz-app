@@ -22,18 +22,20 @@ const useAxios = () => {
 				const originalRequest = error.config;
 				if (error.response.status === 401 && !originalRequest._retry) {
 					originalRequest._retry = true;
+					console.log(auth);
 					const refreshToken = auth?.refreshToken;
+					console.log(refreshToken);
 					const response = await axios.post(
 						`${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh-token`,
 						{
 							refreshToken,
 						}
 					);
-					console.log(response);
-					const { token } = response.data;
-					console.log('New token:', token);
-					setAuth({ ...auth, authToken: token });
-					originalRequest.headers.Authorization = `Bearer ${token}`;
+					console.log(response.data);
+					const { accessToken } = response.data.data;
+					console.log('New token:', accessToken);
+					setAuth({ ...auth, authToken: accessToken });
+					originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 					return axios(originalRequest);
 				}
 				return Promise.reject(error);
