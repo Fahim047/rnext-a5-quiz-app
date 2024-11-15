@@ -1,11 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import Plus from '../icons/Plus';
 
 const CreateQuizSetCard = () => {
 	return (
 		<Link to="./quiz-set/create" className="group">
-			<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 ">
+			<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
 				<div className="text-buzzr-purple mb-4 group-hover:scale-105 transition-all">
 					<Plus />
 				</div>

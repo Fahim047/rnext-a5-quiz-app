@@ -10,8 +10,9 @@ const Dashboard = () => {
 		const fetchQuizSets = async () => {
 			try {
 				const response = await api.get('/api/admin/quizzes');
-				console.log(response);
-				setQuizSets(response.data);
+				if (response.status === 200) {
+					setQuizSets(response.data);
+				}
 			} catch (error) {
 				console.error(error);
 			}

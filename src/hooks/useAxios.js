@@ -7,9 +7,9 @@ const useAxios = () => {
 	useEffect(() => {
 		const requestInterceptor = api.interceptors.request.use(
 			(config) => {
-				const authToken = auth?.authToken;
-				if (authToken) {
-					config.headers.Authorization = `Bearer ${authToken}`;
+				const accessToken = auth?.accessToken;
+				if (accessToken) {
+					config.headers.Authorization = `Bearer ${accessToken}`;
 				}
 				return config;
 			},
@@ -22,20 +22,21 @@ const useAxios = () => {
 				const originalRequest = error.config;
 				if (error.response.status === 401 && !originalRequest._retry) {
 					originalRequest._retry = true;
-					console.log(auth);
 					const refreshToken = auth?.refreshToken;
-					console.log(refreshToken);
 					const response = await axios.post(
 						`${import.meta.env.VITE_API_BASE_URL}/api/auth/refresh-token`,
 						{
 							refreshToken,
 						}
 					);
-					console.log(response.data);
-					const { accessToken } = response.data.data;
-					console.log('New token:', accessToken);
-					setAuth({ ...auth, authToken: accessToken });
-					originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+					const tokens = response.data.data;
+					console.log('New tokens:', tokens);
+					setAuth({
+						...auth,
+						accessToken: tokens.accessToken,
+						refreshToken: tokens.refreshToken,
+					});
+					originalRequest.headers.Authorization = `Bearer ${tokens.accessToken}`;
 					return axios(originalRequest);
 				}
 				return Promise.reject(error);

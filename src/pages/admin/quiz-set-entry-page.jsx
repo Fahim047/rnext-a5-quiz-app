@@ -1,31 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import QuestionList from '../../components/admin/QuestionList';
 import QuizForm from '../../components/admin/QuizForm';
-import QuizPreviewList from '../../components/admin/QuizPreviewList';
-import { quizSets } from '../../data';
 import { useAxios } from '../../hooks';
 
-const quizSet = quizSets[0];
-
 const QuizSetEntryPage = () => {
+	const [quizSet, setQuizSet] = useState({});
 	const { quizSetId } = useParams();
-	console.log(quizSetId);
 	const { api } = useAxios();
-
 	useEffect(() => {
-		const getQuizSetEntryPageAction = async () => {
+		const fetchQuizSets = async () => {
 			try {
-				const response = await api.get(`/api/admin/quizzes/${quizSetId}`);
-				console.log(response);
-				const data = await response.data;
-				console.log(data);
+				const response = await api.get('/api/admin/quizzes');
+				if (response.status === 200) {
+					console.log(response.data);
+					const quizSetData = response.data.find(
+						(quizSet) => quizSet.id === quizSetId
+					);
+					setQuizSet(quizSetData);
+				}
 			} catch (error) {
 				console.error(error);
 			}
 		};
-		getQuizSetEntryPageAction();
+		fetchQuizSets();
 	}, [api, quizSetId]);
-
 	return (
 		<main className="md:flex-grow px-4 sm:px-6 lg:px-8 py-8">
 			<div>
@@ -56,18 +55,14 @@ const QuizSetEntryPage = () => {
 				</nav>
 				<div className="grid grid-cols-1 lg:grid-cols-2 md:gap-8 lg:gap-12">
 					<div>
-						<h2 className="text-3xl font-bold mb-4">Binary Tree Quiz</h2>
+						<h2 className="text-3xl font-bold mb-4">{quizSet?.title}</h2>
 						<div className="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded-full inline-block mb-4">
-							Total number of questions : {quizSet.questions.length}
+							Total number of questions : {quizSet?.questions?.length}
 						</div>
-						<p className="text-gray-600 mb-4">
-							Test understanding of binary tree traversal methods, tree
-							properties, and algorithms.
-						</p>
-
+						<p className="text-gray-600 mb-4">{quizSet?.description}</p>
 						<QuizForm />
 					</div>
-					<QuizPreviewList quizSet={quizSet} />
+					<QuestionList questions={quizSet?.questions} />
 				</div>
 			</div>
 		</main>

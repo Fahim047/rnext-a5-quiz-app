@@ -2,7 +2,6 @@ import { useAuth } from '../../hooks';
 
 const Welcome = () => {
 	const { auth } = useAuth();
-	console.log(auth);
 	const userName = auth?.user?.full_name;
 	return (
 		<header className="mb-8">

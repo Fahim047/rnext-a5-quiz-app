@@ -1,4 +1,4 @@
-const QuizCard = ({ quiz, index }) => {
+const QuestionCard = ({ quiz, index }) => {
 	return (
 		<div className="rounded-lg overflow-hidden shadow-sm mb-4">
 			<div className="bg-white p-6 !pb-2">
@@ -55,4 +55,4 @@ const QuizCard = ({ quiz, index }) => {
 	);
 };
 
-export default QuizCard;
+export default QuestionCard;

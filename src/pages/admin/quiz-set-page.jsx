@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ArrowLeft from '../../components/icons/ArrowLeft';
 import { useAxios } from '../../hooks';
 
@@ -25,17 +25,16 @@ const QuizSetPage = () => {
 		formState: { errors },
 		setError,
 	} = useForm();
+	const navigate = useNavigate();
 	const handleCreateQuizSet = async (formData) => {
 		const formattedData = {
 			title: formData['quiz-title'],
 			description: formData['quiz-description'],
 		};
-		console.log(formattedData);
 		const response = await api.post('/api/admin/quizzes', formattedData);
 		if (response.status === 201) {
-			const data = response.data;
-			console.log(data);
-			// navigate('/admin/quiz-set-entry-page/');
+			const { id } = response.data.data;
+			navigate(`/admin/quiz-set-entry-page/${id}`);
 		}
 	};
 	return (

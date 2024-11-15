@@ -31,7 +31,7 @@ const AdminSidebar = () => {
 	};
 
 	return (
-		<aside className="w-64 bg-primary p-6 flex flex-col">
+		<aside className="w-40 lg:min-w-64 bg-primary p-6 flex flex-col">
 			<div className="mb-10">
 				<img src={LogoWhite} className="h-7" alt="" />
 			</div>
@@ -41,7 +41,7 @@ const AdminSidebar = () => {
 						<li key={link.id}>
 							<NavLink
 								to={link.route}
-								end={link.route === '/admin/dashboard'}
+								end={link.route === '/admin'}
 								className={({ isActive }) =>
 									`block py-2 px-4 rounded-lg ${
 										isActive

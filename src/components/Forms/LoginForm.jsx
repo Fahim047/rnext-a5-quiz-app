@@ -18,14 +18,17 @@ const LoginForm = () => {
 				`${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
 				formData
 			);
-			console.log(response);
 			if (response.status === 200) {
 				const { user, tokens } = response.data.data;
 				if (tokens) {
-					const authToken = tokens.accessToken;
+					const accessToken = tokens.accessToken;
 					const refreshToken = tokens.refreshToken;
-					console.log(`Login successful, token: ${authToken}`);
-					setAuth({ user, authToken, refreshToken });
+					// console.log(`Login successful, authInfo:`, {
+					// 	user,
+					// 	accessToken,
+					// 	refreshToken,
+					// });
+					setAuth({ user, accessToken, refreshToken });
 					if (user?.role === 'admin' && formData.admin) {
 						navigate('/admin');
 					} else {
@@ -34,11 +37,11 @@ const LoginForm = () => {
 				}
 			}
 		} catch (error) {
+			console.log(error);
 			setError('root.random', {
 				type: 'random',
 				message: 'User not found!',
 			});
-			console.log(error);
 		}
 	};
 	return (

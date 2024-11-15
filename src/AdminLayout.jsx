@@ -3,7 +3,6 @@ import AdminSidebar from './components/AdminSidebar';
 import { useAuth } from './hooks';
 const AdminLayout = () => {
 	const { auth } = useAuth();
-	console.log(auth);
 	return (
 		<>
 			{auth?.user?.role === 'admin' ? (
