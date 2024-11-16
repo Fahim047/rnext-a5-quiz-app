@@ -1,13 +1,15 @@
 import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
 import { useAxios } from '../../hooks';
 import Field from '../shared/Field';
 import OptionField from '../shared/OptionField';
 
-const QuizForm = ({ quizSetId }) => {
+const QuizForm = ({ quizSetId, setQuizSet }) => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
+		reset,
 	} = useForm();
 	const { api } = useAxios();
 
@@ -26,14 +28,19 @@ const QuizForm = ({ quizSetId }) => {
 			options,
 			correctAnswer,
 		};
-		console.log(formattedData);
-
 		try {
 			const response = await api.post(
 				`/api/admin/quizzes/${quizSetId}/questions`,
 				formattedData
 			);
-			console.log(response.data);
+			if (response.status === 201) {
+				Swal.fire('Success', 'Question added successfully', 'success');
+				setQuizSet((prevQuizSet) => ({
+					...prevQuizSet,
+					Questions: [...prevQuizSet.Questions, response.data.data],
+				}));
+				reset();
+			}
 		} catch (error) {
 			console.log(error);
 		}

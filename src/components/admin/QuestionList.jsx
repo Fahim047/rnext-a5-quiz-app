@@ -1,13 +1,16 @@
 import QuestionCard from '../QuestionCard';
 
-const QuestionList = ({ questions }) => {
-	console.log(questions);
+const QuestionList = ({ quizSet, setQuizSet }) => {
 	return (
 		<div className="px-4">
-			{questions?.length > 0 &&
-				questions.map((question, index) => (
-					<QuestionCard key={question.id} index={index} quiz={question} />
-				))}
+			{quizSet?.Questions?.map((question, index) => (
+				<QuestionCard
+					key={question.id}
+					index={index}
+					question={question}
+					setQuizSet={setQuizSet}
+				/>
+			))}
 		</div>
 	);
 };

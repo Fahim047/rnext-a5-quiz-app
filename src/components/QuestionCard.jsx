@@ -1,21 +1,27 @@
 import Swal from 'sweetalert2';
 import { useAxios } from '../hooks';
-const QuestionCard = ({ quiz, index }) => {
-	console.log(quiz);
+const QuestionCard = ({ question, index, setQuizSet }) => {
 	const { api } = useAxios();
 	const handleDelete = () => {
 		const deleteQuestion = async () => {
-			const response = await api.delete(`api/admin/questions/${quiz.id}`);
+			const response = await api.delete(`api/admin/questions/${question.id}`);
 			if (response.status === 200) {
 				Swal.fire('Deleted!', 'The quiz has been deleted.', 'success');
+				setQuizSet((prevQuizSet) => ({
+					...prevQuizSet,
+					Questions: prevQuizSet.Questions.filter(
+						(item) => item.id !== question.id
+					),
+				}));
 			}
 		};
 		Swal.fire({
 			title: 'Are you sure!',
 			text: 'Do you want to continue',
 			icon: 'warning',
-			confirmButtonText: 'confirm',
+			confirmButtonText: 'Confirm',
 			showCancelButton: true,
+			cancelButtonText: 'Cancel',
 		}).then(({ isConfirmed }) => {
 			if (isConfirmed) {
 				deleteQuestion();
@@ -27,17 +33,17 @@ const QuestionCard = ({ quiz, index }) => {
 			<div className="bg-white p-6 !pb-2">
 				<div className="flex justify-between items-center mb-4">
 					<h3 className="text-lg font-semibold">{`${index + 1}. ${
-						quiz.question
+						question.question
 					}`}</h3>
 				</div>
 				<div className="space-y-2">
-					{quiz.options.map((option, index) => {
-						if (quiz.correctAnswer === option) {
+					{question.options.map((option, index) => {
+						if (question.correctAnswer === option) {
 							return (
 								<label key={index} className="flex items-center space-x-3">
 									<input
 										type="radio"
-										name={`${quiz.id}-correctAnswer`}
+										name={`${question.id}-correctAnswer`}
 										className="form-radio text-buzzr-purple"
 										checked
 										value={option}
@@ -50,7 +56,7 @@ const QuestionCard = ({ quiz, index }) => {
 								<label key={index} className="flex items-center space-x-3">
 									<input
 										type="radio"
-										name={`${quiz.id}-correctAnswer`}
+										name={`${question.id}-correctAnswer`}
 										className="form-radio text-buzzr-purple"
 										value={option}
 										disabled

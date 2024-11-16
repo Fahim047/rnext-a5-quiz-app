@@ -15,11 +15,10 @@ const QuizSetEntryPage = () => {
 			try {
 				const response = await api.get('/api/admin/quizzes');
 				if (response.status === 200) {
-					console.log(response.data);
-					const quizSetData = response.data.find(
-						(quizSet) => quizSet.id === quizSetId
+					const requiredData = response.data.find(
+						(item) => item.id === quizSetId
 					);
-					setQuizSet(quizSetData);
+					setQuizSet(requiredData);
 				}
 			} catch (error) {
 				console.error(error);
@@ -28,7 +27,7 @@ const QuizSetEntryPage = () => {
 			}
 		};
 		fetchQuizSets();
-	}, [api, quizSetId]);
+	}, []);
 	if (loading) return <div>Loading...</div>;
 	return (
 		<main className="md:flex-grow px-4 sm:px-6 lg:px-8 py-8">
@@ -65,9 +64,9 @@ const QuizSetEntryPage = () => {
 							Total number of questions : {quizSet?.Questions?.length}
 						</div>
 						<p className="text-gray-600 mb-4">{quizSet?.description}</p>
-						<QuizForm quizSetId={quizSetId} />
+						<QuizForm quizSetId={quizSetId} setQuizSet={setQuizSet} />
 					</div>
-					<QuestionList questions={quizSet?.Questions} />
+					<QuestionList quizSet={quizSet} setQuizSet={setQuizSet} />
 				</div>
 			</div>
 		</main>
