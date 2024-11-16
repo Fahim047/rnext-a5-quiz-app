@@ -41,7 +41,7 @@ const AdminSidebar = () => {
 						<li key={link.id}>
 							<NavLink
 								to={link.route}
-								end={link.route === '/admin'}
+								end={true}
 								className={({ isActive }) =>
 									`block py-2 px-4 rounded-lg ${
 										isActive
