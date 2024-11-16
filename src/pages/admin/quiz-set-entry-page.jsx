@@ -6,10 +6,12 @@ import { useAxios } from '../../hooks';
 
 const QuizSetEntryPage = () => {
 	const [quizSet, setQuizSet] = useState({});
+	const [loading, setLoading] = useState(false);
 	const { quizSetId } = useParams();
 	const { api } = useAxios();
 	useEffect(() => {
 		const fetchQuizSets = async () => {
+			setLoading(true);
 			try {
 				const response = await api.get('/api/admin/quizzes');
 				if (response.status === 200) {
@@ -21,10 +23,13 @@ const QuizSetEntryPage = () => {
 				}
 			} catch (error) {
 				console.error(error);
+			} finally {
+				setLoading(false);
 			}
 		};
 		fetchQuizSets();
 	}, [api, quizSetId]);
+	if (loading) return <div>Loading...</div>;
 	return (
 		<main className="md:flex-grow px-4 sm:px-6 lg:px-8 py-8">
 			<div>
@@ -57,12 +62,12 @@ const QuizSetEntryPage = () => {
 					<div>
 						<h2 className="text-3xl font-bold mb-4">{quizSet?.title}</h2>
 						<div className="bg-green-100 text-green-800 text-sm font-medium px-2.5 py-0.5 rounded-full inline-block mb-4">
-							Total number of questions : {quizSet?.questions?.length}
+							Total number of questions : {quizSet?.Questions?.length}
 						</div>
 						<p className="text-gray-600 mb-4">{quizSet?.description}</p>
-						<QuizForm />
+						<QuizForm quizSetId={quizSetId} />
 					</div>
-					<QuestionList questions={quizSet?.questions} />
+					<QuestionList questions={quizSet?.Questions} />
 				</div>
 			</div>
 		</main>

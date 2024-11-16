@@ -1,6 +1,7 @@
 import QuestionCard from '../QuestionCard';
 
 const QuestionList = ({ questions }) => {
+	console.log(questions);
 	return (
 		<div className="px-4">
 			{questions?.length > 0 &&

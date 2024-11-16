@@ -2,9 +2,10 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks';
+import Field from '../shared/Field';
 
 const LoginForm = () => {
-	const { auth, setAuth } = useAuth();
+	const { setAuth } = useAuth();
 	const {
 		register,
 		handleSubmit,
@@ -21,8 +22,7 @@ const LoginForm = () => {
 			if (response.status === 200) {
 				const { user, tokens } = response.data.data;
 				if (tokens) {
-					const accessToken = tokens.accessToken;
-					const refreshToken = tokens.refreshToken;
+					const { accessToken, refreshToken } = tokens;
 					// console.log(`Login successful, authInfo:`, {
 					// 	user,
 					// 	accessToken,
@@ -34,36 +34,34 @@ const LoginForm = () => {
 					} else {
 						navigate('/');
 					}
+				} else {
+					throw new Error('Something went wrong!');
 				}
 			}
 		} catch (error) {
 			console.log(error);
 			setError('root.random', {
 				type: 'random',
-				message: 'User not found!',
+				message: error.message,
 			});
 		}
 	};
 	return (
 		<form onSubmit={handleSubmit(submitForm)}>
-			<div className="mb-4">
-				<label htmlFor="email" className="block mb-2">
-					Enter your email or email address
-				</label>
+			<Field label="Enter your email address" error={errors.email}>
 				<input
 					{...register('email', {
-						required: 'email or email is required',
+						required: 'Email is required',
 					})}
-					type="text"
+					type="email"
 					id="email"
-					className="w-full px-4 py-3 rounded-lg border border-gray-300"
-					placeholder="email or email address"
+					className={`w-full px-4 py-3 rounded-lg border border-gray-300 ${
+						errors.email ? 'border-red-500' : ''
+					}`}
+					placeholder="Enter your email address"
 				/>
-			</div>
-			<div className="mb-6">
-				<label htmlFor="password" className="block mb-2">
-					Enter your Password
-				</label>
+			</Field>
+			<Field label="Enter your Password" error={errors.password}>
 				<input
 					{...register('password', {
 						required: 'Password is required',
@@ -74,10 +72,12 @@ const LoginForm = () => {
 					})}
 					type="password"
 					id="password"
-					className="w-full px-4 py-3 rounded-lg border border-gray-300"
+					className={`w-full px-4 py-3 rounded-lg border border-gray-300 ${
+						errors.password ? 'border-red-500' : ''
+					}`}
 					placeholder="Password"
 				/>
-			</div>
+			</Field>
 			<div className="mb-6 flex gap-2 items-center">
 				<input
 					{...register('admin')}
@@ -89,7 +89,9 @@ const LoginForm = () => {
 					Login as Admin
 				</label>
 			</div>
-			<p className="text-red-500 text-lg">{errors?.root?.random?.message}</p>
+			<p className="text-red-500 text-lg mb-4">
+				{errors?.root?.random?.message}
+			</p>
 			<button
 				type="submit"
 				className="w-full bg-primary text-white py-3 rounded-lg mb-4"
