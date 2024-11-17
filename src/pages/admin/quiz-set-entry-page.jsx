@@ -9,6 +9,19 @@ const QuizSetEntryPage = () => {
 	const [loading, setLoading] = useState(false);
 	const { quizSetId } = useParams();
 	const { api } = useAxios();
+	const handleStatusChange = async () => {
+		const newStatus = quizSet?.status === 'draft' ? 'published' : 'draft';
+		try {
+			const response = await api.patch(`/api/admin/quizzes/${quizSetId}`, {
+				status: newStatus,
+			});
+			if (response.status === 200) {
+				setQuizSet((prevQuizSet) => ({ ...prevQuizSet, status: newStatus }));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	useEffect(() => {
 		const fetchQuizSets = async () => {
 			setLoading(true);
@@ -27,12 +40,15 @@ const QuizSetEntryPage = () => {
 			}
 		};
 		fetchQuizSets();
-	}, []);
+	}, [api, quizSetId]);
 	if (loading) return <div>Loading...</div>;
 	return (
 		<main className="md:flex-grow px-4 sm:px-6 lg:px-8 py-8">
 			<div>
-				<nav className="text-sm mb-4" aria-label="Breadcrumb">
+				<nav
+					className="text-sm mb-4 flex justify-between items-center"
+					aria-label="Breadcrumb"
+				>
 					<ol className="list-none p-0 inline-flex">
 						<li className="flex items-center">
 							<a href="/" className="text-gray-600 hover:text-buzzr-purple">
@@ -56,6 +72,12 @@ const QuizSetEntryPage = () => {
 							</a>
 						</li>
 					</ol>
+					<button
+						className="w-fit text-base bg-primary text-white text-primary-foreground p-2 rounded-md hover:bg-primary/90 transition-colors"
+						onClick={handleStatusChange}
+					>
+						{quizSet?.status === 'draft' ? 'Publish' : 'Unpublish'}
+					</button>
 				</nav>
 				<div className="grid grid-cols-1 lg:grid-cols-2 md:gap-8 lg:gap-12">
 					<div>
