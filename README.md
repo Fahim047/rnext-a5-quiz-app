@@ -1,8 +1,17 @@
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+    					<div className="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow max-h-[450px] cursor-pointer group relative">
+    						<div className="group-hover:scale-105 absolute transition-all text-white  text-center top-1/2 -translate-y-1/2 px-4">
+    							<h1 className=" text-5xl" style={{ fontFamily: 'Jaro' }}>
+    								JavaScript Basic Quiz
+    							</h1>
+    							<p className="mt-2 text-lg">
+    								Test your knowledge of JavaScript basics with quizzes that
+    								cover essential concepts, syntax, and foundational programming
+    								skills
+    							</p>
+    						</div>
+    						<img
+    							src={BackgroundImage5}
+    							alt="JavaScript Hoisting"
+    							className="w-full h-full object-cover rounded mb-4 transition-all "
+    						/>
+    					</div>
