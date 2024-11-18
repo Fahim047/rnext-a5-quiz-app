@@ -5,7 +5,7 @@ import Dashboard from '../pages/admin/Dashboard';
 import QuizSetEntryPage from '../pages/admin/quiz-set-entry-page';
 import QuizSetPage from '../pages/admin/quiz-set-page';
 import Home from '../pages/Home';
-import LeaderBoard from '../pages/Leaderboard';
+import LeaderBoard from '../pages/LeaderBoard';
 import Login from '../pages/Login';
 import QuizPage from '../pages/QuizPage';
 import Registration from '../pages/Registration';
