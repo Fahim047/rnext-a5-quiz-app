@@ -1,6 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import Avatar from '../assets/avatar.webp';
 import LogoWhite from '../assets/logo-white.svg';
+import { useAuth } from '../hooks';
 
 const sidebarLinks = [
 	{
@@ -25,6 +26,7 @@ const sidebarLinks = [
 	},
 ];
 const AdminSidebar = () => {
+	const { auth } = useAuth();
 	const navigate = useNavigate();
 	const handleLogout = () => {
 		navigate('/logout');
@@ -70,7 +72,7 @@ const AdminSidebar = () => {
 					alt="Mr Hasan"
 					className="w-10 h-10 rounded-full mr-3 object-cover"
 				/>
-				<span className="text-white font-semibold">Saad Hasan</span>
+				<span className="text-white font-semibold">{auth?.user.full_name}</span>
 			</div>
 		</aside>
 	);

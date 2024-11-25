@@ -1,10 +1,16 @@
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
 import { useAxios } from '../../hooks';
+import { Toast } from '../../sweetalert/Toast';
 import Field from '../shared/Field';
 import OptionField from '../shared/OptionField';
 
-const QuizForm = ({ quizSetId, setQuizSet }) => {
+const QuizForm = ({
+	quizSetId,
+	setQuizSet,
+	editingQuestion,
+	setEditingQuestion,
+}) => {
 	const {
 		register,
 		handleSubmit,
@@ -13,8 +19,32 @@ const QuizForm = ({ quizSetId, setQuizSet }) => {
 	} = useForm();
 	const { api } = useAxios();
 
+	useEffect(() => {
+		// Prefill the form if editingQuestion changes
+		if (editingQuestion) {
+			reset({
+				questionTitle: editingQuestion.question,
+				option1: editingQuestion.options[0],
+				option2: editingQuestion.options[1],
+				option3: editingQuestion.options[2],
+				option4: editingQuestion.options[3],
+				correctAnswer: editingQuestion.options
+					.indexOf(editingQuestion.correctAnswer)
+					.toString(),
+			});
+		} else {
+			reset({
+				questionTitle: '',
+				option1: '',
+				option2: '',
+				option3: '',
+				option4: '',
+				correctAnswer: '',
+			});
+		}
+	}, [editingQuestion, reset]);
+
 	const submitForm = async (formData) => {
-		// console.log(formData);
 		const options = [
 			formData.option1,
 			formData.option2,
@@ -28,21 +58,47 @@ const QuizForm = ({ quizSetId, setQuizSet }) => {
 			options,
 			correctAnswer,
 		};
+
 		try {
-			const response = await api.post(
-				`/api/admin/quizzes/${quizSetId}/questions`,
-				formattedData
-			);
-			if (response.status === 201) {
-				Swal.fire('Success', 'Question added successfully', 'success');
-				setQuizSet((prevQuizSet) => ({
-					...prevQuizSet,
-					Questions: [...prevQuizSet.Questions, response.data.data],
-				}));
-				reset();
+			if (editingQuestion) {
+				// Update question if editing
+				const response = await api.patch(
+					`/api/admin/questions/${editingQuestion.id}`,
+					formattedData
+				);
+				if (response.status === 200) {
+					setQuizSet((prevQuizSet) => ({
+						...prevQuizSet,
+						Questions: prevQuizSet.Questions.map((q) =>
+							q.id === editingQuestion.id ? response.data.data : q
+						),
+					}));
+					setEditingQuestion(null);
+					Toast.fire({
+						icon: 'success',
+						text: 'Question updated successfully',
+					});
+				}
+			} else {
+				// Create new question
+				const response = await api.post(
+					`/api/admin/quizzes/${quizSetId}/questions`,
+					formattedData
+				);
+				if (response.status === 201) {
+					setQuizSet((prevQuizSet) => ({
+						...prevQuizSet,
+						Questions: [...prevQuizSet.Questions, response.data.data],
+					}));
+					reset();
+					Toast.fire({
+						icon: 'success',
+						text: 'Question added successfully',
+					});
+				}
 			}
 		} catch (error) {
-			console.log(error);
+			console.error(error);
 		}
 	};
 
@@ -92,10 +148,21 @@ const QuizForm = ({ quizSetId, setQuizSet }) => {
 					)}
 				</div>
 
-				{/* Submit Button */}
-				<button className="w-full bg-primary text-white text-primary-foreground p-2 rounded-md hover:bg-primary/90 transition-colors">
-					Save Quiz
-				</button>
+				{/* Submit Button and Cancel Button*/}
+				<div className="flex space-x-4">
+					<button className="w-full bg-primary text-white text-primary-foreground p-2 rounded-md hover:bg-primary/90 transition-colors">
+						{editingQuestion ? 'Update' : 'Create'}
+					</button>
+					{editingQuestion && (
+						<button
+							type="button"
+							onClick={() => setEditingQuestion(null)}
+							className="w-full bg-red-500 text-white text-primary-foreground p-2 rounded-md hover:bg-red-600 transition-colors"
+						>
+							Cancel
+						</button>
+					)}
+				</div>
 			</div>
 		</form>
 	);

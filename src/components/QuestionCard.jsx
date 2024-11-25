@@ -1,12 +1,16 @@
 import Swal from 'sweetalert2';
 import { useAxios } from '../hooks';
-const QuestionCard = ({ question, index, setQuizSet }) => {
+import { Toast } from '../sweetalert/Toast';
+const QuestionCard = ({ question, index, setQuizSet, setEditingQuestion }) => {
 	const { api } = useAxios();
 	const handleDelete = () => {
 		const deleteQuestion = async () => {
 			const response = await api.delete(`api/admin/questions/${question.id}`);
 			if (response.status === 200) {
-				Swal.fire('Deleted!', 'The quiz has been deleted.', 'success');
+				Toast.fire({
+					icon: 'success',
+					text: 'Question deleted successfully',
+				});
 				setQuizSet((prevQuizSet) => ({
 					...prevQuizSet,
 					Questions: prevQuizSet.Questions.filter(
@@ -75,7 +79,10 @@ const QuestionCard = ({ question, index, setQuizSet }) => {
 				>
 					Delete
 				</button>
-				<button className="text-primary hover:text-primary/80 font-medium">
+				<button
+					className="text-primary hover:text-primary/80 font-medium"
+					onClick={() => setEditingQuestion(question)}
+				>
 					Edit Question
 				</button>
 			</div>

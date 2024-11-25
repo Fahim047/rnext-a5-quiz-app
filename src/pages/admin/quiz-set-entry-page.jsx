@@ -3,9 +3,11 @@ import { useParams } from 'react-router-dom';
 import QuestionList from '../../components/admin/QuestionList';
 import QuizForm from '../../components/admin/QuizForm';
 import { useAxios } from '../../hooks';
+import { Toast } from '../../sweetalert/Toast';
 
 const QuizSetEntryPage = () => {
 	const [quizSet, setQuizSet] = useState({});
+	const [editingQuestion, setEditingQuestion] = useState(null);
 	const [loading, setLoading] = useState(false);
 	const { quizSetId } = useParams();
 	const { api } = useAxios();
@@ -17,6 +19,10 @@ const QuizSetEntryPage = () => {
 			});
 			if (response.status === 200) {
 				setQuizSet((prevQuizSet) => ({ ...prevQuizSet, status: newStatus }));
+				Toast.fire({
+					icon: 'success',
+					text: `Quiz status updated to ${newStatus}`,
+				});
 			}
 		} catch (error) {
 			console.log(error);
@@ -42,6 +48,7 @@ const QuizSetEntryPage = () => {
 		fetchQuizSets();
 	}, [api, quizSetId]);
 	if (loading) return <div>Loading...</div>;
+	if (!quizSet) return null;
 	return (
 		<main className="md:flex-grow px-4 sm:px-6 lg:px-8 py-8">
 			<div>
@@ -72,8 +79,12 @@ const QuizSetEntryPage = () => {
 							</a>
 						</li>
 					</ol>
+
 					<button
-						className="w-fit text-base bg-primary text-white text-primary-foreground p-2 rounded-md hover:bg-primary/90 transition-colors"
+						className={`w-fit text-base bg-primary text-white text-primary-foreground p-2 rounded-md hover:bg-primary/90 transition-colors ${
+							quizSet?.Questions?.length === 0 ? 'cursor-not-allowed' : ''
+						}`}
+						disabled={quizSet?.Questions?.length === 0}
 						onClick={handleStatusChange}
 					>
 						{quizSet?.status === 'draft' ? 'Publish' : 'Unpublish'}
@@ -86,9 +97,21 @@ const QuizSetEntryPage = () => {
 							Total number of questions : {quizSet?.Questions?.length}
 						</div>
 						<p className="text-gray-600 mb-4">{quizSet?.description}</p>
-						<QuizForm quizSetId={quizSetId} setQuizSet={setQuizSet} />
+						<p className="mb-4 text-gray-600 font-bold">
+							Note: minimum 1 question is required to publish.
+						</p>
+						<QuizForm
+							quizSetId={quizSetId}
+							setQuizSet={setQuizSet}
+							editingQuestion={editingQuestion}
+							setEditingQuestion={setEditingQuestion}
+						/>
 					</div>
-					<QuestionList quizSet={quizSet} setQuizSet={setQuizSet} />
+					<QuestionList
+						quizSet={quizSet}
+						setQuizSet={setQuizSet}
+						setEditingQuestion={setEditingQuestion}
+					/>
 				</div>
 			</div>
 		</main>

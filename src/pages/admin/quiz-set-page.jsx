@@ -2,21 +2,8 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import ArrowLeft from '../../components/icons/ArrowLeft';
 import { useAxios } from '../../hooks';
+import { Toast } from '../../sweetalert/Toast';
 
-// response will be like this
-// {
-// 	"status": "success",
-// 	"data": {
-// 			"id": "98a0bbbd-27a0-457b-8699-4c348a9256f4",
-// 			"status": "draft",
-// 			"title": "React.js Fundamentals",
-// 			"description": "Test your knowledge of JavaScript basics with quizzes that cover essential concepts, syntax, and foundational programming skills",
-// 			"thumbnail": "http://localhost:5000/images/7.jpg",
-// 			"userId": "00176b41-c9af-48b4-b792-ad3128f02ffa",
-// 			"updatedAt": "2024-11-14T06:59:30.645Z",
-// 			"createdAt": "2024-11-14T06:59:30.645Z"
-// 	}
-// }
 const QuizSetPage = () => {
 	const { api } = useAxios();
 	const {
@@ -35,6 +22,10 @@ const QuizSetPage = () => {
 		if (response.status === 201) {
 			const { id } = response.data.data;
 			navigate(`/admin/quiz-set-entry-page/${id}`);
+			Toast.fire({
+				icon: 'success',
+				title: 'Quiz created successfully',
+			});
 		}
 	};
 	return (
