@@ -38,7 +38,7 @@ const processAttempts = (attempts, currentUserId) => {
 	};
 };
 
-const calculateLeaderboard = (attempts) => {
+const calculateLeaderboard = (attempts, currentUserId) => {
 	const leaderboard = attempts.map((attempt) => {
 		const score = attempt.submitted_answers.reduce((acc, submitted) => {
 			const correctAnswer = attempt.correct_answers.find(
@@ -50,13 +50,36 @@ const calculateLeaderboard = (attempts) => {
 			return acc;
 		}, 0);
 		return {
+			id: attempt.user.id,
 			name: attempt.user.full_name,
 			email: attempt.user.email,
 			score,
 		};
 	});
 
-	return leaderboard.sort((a, b) => b.score - a.score);
+	const sortedLeaderboard = leaderboard.sort((a, b) => b.score - a.score);
+
+	const currentUserIndex = sortedLeaderboard.findIndex(
+		(user) => user.id === currentUserId
+	);
+
+	sortedLeaderboard.forEach((user, index) => {
+		user.position = `${index + 1}${getOrdinalSuffix(index + 1)}`;
+	});
+
+	return {
+		leaderboard: sortedLeaderboard,
+		currentUserPosition:
+			currentUserIndex !== -1
+				? sortedLeaderboard[currentUserIndex].position
+				: null,
+	};
+};
+const getOrdinalSuffix = (num) => {
+	if (num === 1) return 'st';
+	if (num === 2) return 'nd';
+	if (num === 3) return 'rd';
+	return 'th';
 };
 
 const getOptionClass = (option, correctAnswer, submittedAnswer) => {

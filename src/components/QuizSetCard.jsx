@@ -3,7 +3,7 @@ const QuizSetCard = ({ quizSet }) => {
 	const { id, title, description, is_attempted, thumbnail } = quizSet;
 	return (
 		<Link
-			to={is_attempted ? `/result/${id}` : `/quizzes/${id}`}
+			to={is_attempted ? `/leaderboard/${id}` : `/quizzes/${id}`}
 			className="rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow max-h-[450px] relative group"
 		>
 			<div className="group-hover:scale-105 absolute transition-all text-white  text-center top-1/2 -translate-y-1/2 px-4">

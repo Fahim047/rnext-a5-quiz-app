@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAxios } from '../hooks';
 
 const QuestionForm = ({
@@ -11,7 +11,7 @@ const QuestionForm = ({
 }) => {
 	const { api } = useAxios();
 	const { quizSetId } = useParams();
-	console.log(quizSetId);
+	const navigate = useNavigate();
 	const handleNext = () => {
 		if (currentQuestionIndex < totalQuestions - 1) {
 			setCurrentQuestionIndex((prev) => prev + 1);
@@ -27,11 +27,11 @@ const QuestionForm = ({
 	const handleSubmit = async () => {
 		console.log('Quiz submitted!', userAnswers);
 		try {
-			const res = await api.post(`/api/quizzes/${quizSetId}/attempt`, {
+			const response = await api.post(`/api/quizzes/${quizSetId}/attempt`, {
 				answers: userAnswers,
 			});
-			const { percentage } = res.data.data;
-			console.log(percentage);
+
+			navigate(`/result/${quizSetId}`);
 		} catch (err) {
 			console.log(err);
 		}

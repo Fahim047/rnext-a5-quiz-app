@@ -1,34 +1,23 @@
-import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Avatar from '../assets/avatar.webp';
-import { useAxios } from '../hooks';
-import { calculateLeaderboard } from '../utils';
+import LeaderboardItem from '../components/LeaderboardItem';
+import { useAuth } from '../hooks';
+import useQuizSetData from '../hooks/useQuizSetData';
 const LeaderBoard = () => {
-	const [leaderboard, setLeaderboard] = useState([]);
-	const [loading, setLoading] = useState();
-	const { api } = useAxios();
+	const { auth } = useAuth();
 	const { quizSetId } = useParams();
-	console.log(leaderboard);
-
-	useEffect(() => {
-		const fetchLeaderboard = async () => {
-			setLoading(true);
-			try {
-				const response = await api.get(`/api/quizzes/${quizSetId}/attempts`);
-				const quizData = response.data.data;
-				const lb = calculateLeaderboard(quizData.attempts);
-				setLeaderboard(lb);
-			} catch (err) {
-				console.log(err);
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchLeaderboard();
-	}, [api, quizSetId]);
+	const { quizData, loading, error } = useQuizSetData(quizSetId);
+	console.log(quizData);
 
 	if (loading) {
 		return <div>Loading...</div>;
+	}
+	if (error) {
+		return (
+			<div className="h-[300px] text-3xl flex items-center justify-center text-red-500">
+				{error}
+			</div>
+		);
 	}
 	return (
 		<main className="min-h-[calc(100vh-50px)] flex items-center justify-center">
@@ -42,21 +31,23 @@ const LeaderBoard = () => {
 								alt="Profile Pic"
 								className="w-20 h-20 rounded-full border-4 border-white mb-4 object-cover"
 							/>
-							<h2 className="text-2xl font-bold">{leaderboard[0]?.name}</h2>
-							<p className="text-xl">20 Position</p>
+							<h2 className="text-2xl font-bold">{auth?.user.full_name}</h2>
+							<p className="text-xl">{quizData.currentUserPosition}</p>
 						</div>
 						<div className="grid grid-cols-3 gap-4 mb-6">
 							<div className="text-center">
 								<p className="text-sm opacity-75">Mark</p>
-								<p className="text-2xl font-bold">1200</p>
+								<p className="text-2xl font-bold">
+									{quizData.userScore}/{quizData.totalMarks}
+								</p>
 							</div>
 							<div className="text-center">
 								<p className="text-sm opacity-75">Correct</p>
-								<p className="text-2xl font-bold">08</p>
+								<p className="text-2xl font-bold">{quizData.correctCount}</p>
 							</div>
 							<div className="text-center">
 								<p className="text-sm opacity-75">Wrong</p>
-								<p className="text-2xl font-bold">16</p>
+								<p className="text-2xl font-bold">{quizData.wrongCount}</p>
 							</div>
 						</div>
 					</div>
@@ -66,23 +57,8 @@ const LeaderBoard = () => {
 						<p className="mb-6">React Hooks Quiz</p>
 						<ul className="space-y-4">
 							{/* <!-- Leaderboard Item --> */}
-							{[1, 2, 3, 4].map((item) => (
-								<li key={item} className="flex items-center justify-between">
-									<div className="flex items-center">
-										<img
-											src={Avatar}
-											alt="SPD Smith"
-											className="object-cover w-10 h-10 rounded-full mr-4"
-										/>
-										<div>
-											<h3 className="font-semibold">SPD Smith</h3>
-											<p className="text-sm text-gray-500">1st</p>
-										</div>
-									</div>
-									<div className="flex items-center">
-										<span className="mr-2">2,340</span>
-									</div>
-								</li>
+							{quizData.leaderboard.map((item) => (
+								<LeaderboardItem key={item.email} data={item} />
 							))}
 						</ul>
 					</div>

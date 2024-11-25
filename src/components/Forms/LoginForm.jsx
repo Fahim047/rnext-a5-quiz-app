@@ -23,11 +23,6 @@ const LoginForm = () => {
 				const { user, tokens } = response.data.data;
 				if (tokens) {
 					const { accessToken, refreshToken } = tokens;
-					// console.log(`Login successful, authInfo:`, {
-					// 	user,
-					// 	accessToken,
-					// 	refreshToken,
-					// });
 					setAuth({ user, accessToken, refreshToken });
 					if (user?.role === 'admin' && formData.admin) {
 						navigate('/admin');

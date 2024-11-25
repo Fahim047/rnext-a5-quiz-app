@@ -43,7 +43,11 @@ const router = createBrowserRouter([
 			},
 			{
 				path: '/leaderboard/:quizSetId',
-				element: <LeaderBoard />,
+				element: (
+					<PrivateRoutes>
+						<LeaderBoard />
+					</PrivateRoutes>
+				),
 			},
 		],
 	},

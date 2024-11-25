@@ -1,54 +1,11 @@
-import { useEffect, useState } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Link, useParams } from 'react-router-dom';
 import AnswerCard from '../components/result/AnswerCard';
-import { useAuth, useAxios } from '../hooks';
-import { processAttempts } from '../utils';
+import useQuizSetData from '../hooks/useQuizSetData';
 const Result = () => {
-	const { api } = useAxios();
-	const [quizSet, setQuizSet] = useState(null);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
 	const { quizSetId } = useParams();
-	const { auth } = useAuth();
-	console.log(quizSet);
-	useEffect(() => {
-		const fetchQuizSetAttempts = async () => {
-			setLoading(true);
-			setError(null);
-			try {
-				const response = await api.get(`/api/quizzes/${quizSetId}/attempts`);
-				if (response.status === 200) {
-					const quizData = response.data.data;
-					const userAttempt = processAttempts(quizData.attempts, auth.user.id);
-					let updatedQuizSet = { ...quizData, userAttempt };
-					// api call for getting questions
-					const secondResponse = await api.get(`/api/quizzes/${quizSetId}`);
-					if (secondResponse.status === 200) {
-						const quizDetails = secondResponse.data.data;
-						updatedQuizSet = {
-							...updatedQuizSet,
-							questions: quizDetails.questions,
-						};
-					} else {
-						throw new Error('Failed to fetch quiz details');
-					}
-
-					// Update state with the final data
-					setQuizSet(updatedQuizSet);
-				} else {
-					throw new Error('Failed to fetch quiz data');
-				}
-			} catch (err) {
-				setError('Unable to load quiz. Please try again later.');
-				console.error(err);
-			} finally {
-				setLoading(false);
-			}
-		};
-		fetchQuizSetAttempts();
-	}, [api, quizSetId, auth.user.id]);
+	const { quizData, loading, error } = useQuizSetData(quizSetId);
 
 	if (loading) {
 		return (
@@ -66,7 +23,7 @@ const Result = () => {
 		);
 	}
 
-	if (!quizSet) {
+	if (!quizData) {
 		return null;
 	}
 
@@ -78,10 +35,8 @@ const Result = () => {
 					<div>
 						<div className="text-white">
 							<div>
-								<h2 className="text-4xl font-bold mb-2">
-									{quizSet.quiz.title}
-								</h2>
-								<p>{quizSet.quiz.description}</p>
+								<h2 className="text-4xl font-bold mb-2">{quizData.title}</h2>
+								<p>{quizData.description}</p>
 							</div>
 
 							<div className="my-6 flex items-center  ">
@@ -89,22 +44,21 @@ const Result = () => {
 									<div className="flex gap-6 my-6">
 										<div>
 											<p className="font-semibold text-2xl my-0">
-												{quizSet.quiz.total_questions}
+												{quizData.totalQuestions}
 											</p>
 											<p className="text-gray-300">Questions</p>
 										</div>
 
 										<div>
 											<p className="font-semibold text-2xl my-0">
-												{quizSet.userAttempt.correctCount}
+												{quizData.correctCount}
 											</p>
 											<p className="text-gray-300">Correct</p>
 										</div>
 
 										<div>
 											<p className="font-semibold text-2xl my-0">
-												{quizSet.quiz.total_questions -
-													quizSet.userAttempt.correctCount}
+												{quizData.wrongCount}
 											</p>
 											<p className="text-gray-300">Wrong</p>
 										</div>
@@ -120,21 +74,15 @@ const Result = () => {
 
 								<div className="w-1/2 bg-primary/80 rounded-md border border-white/20 flex items-center p-4">
 									<div className="flex-1">
-										<p className="text-2xl font-bold">5/10</p>
+										<p className="text-2xl font-bold">
+											{quizData.userScore}/{quizData.totalMarks}
+										</p>
 										<p>Your Mark</p>
 									</div>
 									<div>
 										<CircularProgressbar
-											value={Math.round(
-												(quizSet.userAttempt.marksObtained /
-													quizSet.quiz.total_marks) *
-													100
-											)}
-											text={`${Math.round(
-												(quizSet.userAttempt.marksObtained /
-													quizSet.quiz.total_marks) *
-													100
-											)}%`}
+											value={quizData.userScorePercentage}
+											text={`${quizData.userScorePercentage}%`}
 											className="h-20"
 										/>
 									</div>
@@ -148,12 +96,12 @@ const Result = () => {
 				<div className="max-h-screen md:w-1/2 flex items-center justify-center h-full p-8">
 					<div className="h-[calc(100vh-50px)] overflow-y-scroll ">
 						<div className="px-4">
-							{quizSet.questions.map((question, index) => (
+							{quizData.questions.map((question, index) => (
 								<AnswerCard
 									key={question.id}
 									question={question}
 									questionNumber={index + 1}
-									submittedAnswer={quizSet.userAttempt.submitted_answers.find(
+									submittedAnswer={quizData.userAttempt.submitted_answers.find(
 										(answer) => answer.question_id === question.id
 									)}
 								/>
