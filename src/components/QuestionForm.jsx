@@ -1,23 +1,61 @@
+import { useParams } from 'react-router-dom';
+import { useAxios } from '../hooks';
+
 const QuestionForm = ({
 	currentQuestionIndex,
 	setCurrentQuestionIndex,
 	question,
 	totalQuestions,
+	userAnswers,
+	onAnswer,
 }) => {
+	const { api } = useAxios();
+	const { quizSetId } = useParams();
+	console.log(quizSetId);
+	const handleNext = () => {
+		if (currentQuestionIndex < totalQuestions - 1) {
+			setCurrentQuestionIndex((prev) => prev + 1);
+		}
+	};
+
+	const handlePrev = () => {
+		if (currentQuestionIndex > 0) {
+			setCurrentQuestionIndex((prev) => prev - 1);
+		}
+	};
+
+	const handleSubmit = async () => {
+		console.log('Quiz submitted!', userAnswers);
+		try {
+			const res = await api.post(`/api/quizzes/${quizSetId}/attempt`, {
+				answers: userAnswers,
+			});
+			const { percentage } = res.data.data;
+			console.log(percentage);
+		} catch (err) {
+			console.log(err);
+		}
+	};
+
+	const handleOptionChange = (answer) => {
+		onAnswer(question.id, answer);
+	};
+
+	const hasAnswered = userAnswers[question?.id] !== undefined;
+
 	if (!question) {
-		console.log('if er vitor dhukse');
-		return null;
+		return (
+			<div className="text-center text-gray-500">No question available</div>
+		);
 	}
+
 	return (
 		<div className="lg:col-span-2 bg-white">
-			<div className="bg-white p-6 !pb-2 rounded-md">
-				<div className="flex justify-between items-center mb-4">
-					<h3 className="text-2xl font-semibold">
-						{`${currentQuestionIndex + 1}. ${question.question}`}
-					</h3>
-				</div>
-				<div className="grid grid-cols-2 gap-4">
-					{/* <!-- Option 1 --> */}
+			<div className="bg-white p-6 rounded-md">
+				<h3 className="text-2xl font-semibold mb-4">
+					{`${currentQuestionIndex + 1}. ${question.question}`}
+				</h3>
+				<div className="grid grid-cols-2 gap-4 mb-6">
 					{question?.options?.map((option, index) => (
 						<label
 							key={index}
@@ -25,30 +63,43 @@ const QuestionForm = ({
 						>
 							<input
 								type="radio"
-								name="answer"
+								name={question.id}
+								value={option}
+								onChange={() => handleOptionChange(option)}
+								checked={userAnswers[question.id] === option}
 								className="form-radio text-buzzr-purple"
 							/>
 							<span>{option}</span>
 						</label>
 					))}
 				</div>
-				<div className="flex justify-between gap-4">
-					{currentQuestionIndex > 0 && (
-						<button
-							onClick={() => setCurrentQuestionIndex((prev) => prev - 1)}
-							className="w-fit text-center mr-auto block bg-primary text-white py-2 px-4 rounded-md hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary mb-6 font-semibold my-8"
-						>
-							Prev
-						</button>
-					)}
-					{currentQuestionIndex < totalQuestions - 1 && (
-						<button
-							onClick={() => setCurrentQuestionIndex((prev) => prev + 1)}
-							className="w-fit text-center ml-auto block bg-primary text-white py-2 px-4 rounded-md hover:bg-indigo-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary mb-6 font-semibold my-8"
-						>
-							Next
-						</button>
-					)}
+				<div className="flex justify-between">
+					<button
+						onClick={handlePrev}
+						className={`py-2 px-4 rounded-md bg-primary text-white font-semibold ${
+							currentQuestionIndex === 0
+								? 'opacity-50 cursor-not-allowed'
+								: 'hover:bg-indigo-800 focus:ring focus:ring-primary'
+						}`}
+						disabled={currentQuestionIndex === 0}
+					>
+						Prev
+					</button>
+					<button
+						onClick={
+							currentQuestionIndex === totalQuestions - 1
+								? handleSubmit
+								: handleNext
+						}
+						className={`py-2 px-4 rounded-md bg-primary text-white font-semibold ${
+							!hasAnswered
+								? 'opacity-50 cursor-not-allowed'
+								: 'hover:bg-indigo-800 focus:ring focus:ring-primary'
+						}`}
+						disabled={!hasAnswered}
+					>
+						{currentQuestionIndex === totalQuestions - 1 ? 'Submit' : 'Next'}
+					</button>
 				</div>
 			</div>
 		</div>

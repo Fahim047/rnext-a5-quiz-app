@@ -7,9 +7,11 @@ import QuizSetPage from '../pages/admin/quiz-set-page';
 import Home from '../pages/Home';
 import LeaderBoard from '../pages/LeaderBoard';
 import Login from '../pages/Login';
+import Logout from '../pages/Logout';
 import QuizPage from '../pages/QuizPage';
 import Registration from '../pages/Registration';
 import Result from '../pages/Result';
+import PrivateRoutes from './PrivateRoutes';
 const router = createBrowserRouter([
 	{
 		path: '/',
@@ -21,14 +23,26 @@ const router = createBrowserRouter([
 			},
 			{
 				path: '/quizzes/:quizSetId',
-				element: <QuizPage />,
+				element: (
+					<PrivateRoutes>
+						<QuizPage />
+					</PrivateRoutes>
+				),
 			},
 			{
-				path: '/result',
-				element: <Result />,
+				path: '/result/:quizSetId',
+				element: (
+					<PrivateRoutes>
+						<Result />
+					</PrivateRoutes>
+				),
 			},
 			{
 				path: '/leaderboard',
+				element: <LeaderBoard />,
+			},
+			{
+				path: '/leaderboard/:quizSetId',
 				element: <LeaderBoard />,
 			},
 		],
@@ -67,6 +81,10 @@ const router = createBrowserRouter([
 	{
 		path: '/signup',
 		element: <Registration />,
+	},
+	{
+		path: '/logout',
+		element: <Logout />,
 	},
 ]);
 export default router;

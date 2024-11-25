@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Option = () => {
 	return (
 		<label className="flex items-center space-x-3 py-3 px-4 bg-primary/5 rounded-md text-lg">

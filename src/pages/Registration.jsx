@@ -1,15 +1,21 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../assets/logo.svg';
 import SalyImage from '../assets/Saly-1.png';
 import RegistrationForm from '../components/Forms/RegistrationForm';
 const Registration = () => {
+	const navigate = useNavigate();
 	return (
 		<body className="bg-white text-gray-800 ">
 			<div className="flex min-h-screen max-h-screen">
 				{/* <!-- Left side --> */}
 				<div className="hidden  lg:flex lg:w-1/2 bg-primary flex-col justify-between p-12  h-full fixed left-0 top-0">
 					<div className="text-white">
-						<img src={Logo} className="h-8" alt="" />
+						<img
+							src={Logo}
+							className="h-8 cursor-pointer"
+							alt=""
+							onClick={() => navigate('/')}
+						/>
 
 						<img
 							src={SalyImage}

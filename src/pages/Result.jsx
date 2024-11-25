@@ -1,50 +1,121 @@
-import LogoWhite from '../assets/logo-white.svg';
+import { useEffect, useState } from 'react';
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import { Link, useParams } from 'react-router-dom';
+import AnswerCard from '../components/result/AnswerCard';
+import { useAuth, useAxios } from '../hooks';
+import { processAttempts } from '../utils';
 const Result = () => {
+	const { api } = useAxios();
+	const [quizSet, setQuizSet] = useState(null);
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
+	const { quizSetId } = useParams();
+	const { auth } = useAuth();
+	console.log(quizSet);
+	useEffect(() => {
+		const fetchQuizSetAttempts = async () => {
+			setLoading(true);
+			setError(null);
+			try {
+				const response = await api.get(`/api/quizzes/${quizSetId}/attempts`);
+				if (response.status === 200) {
+					const quizData = response.data.data;
+					const userAttempt = processAttempts(quizData.attempts, auth.user.id);
+					let updatedQuizSet = { ...quizData, userAttempt };
+					// api call for getting questions
+					const secondResponse = await api.get(`/api/quizzes/${quizSetId}`);
+					if (secondResponse.status === 200) {
+						const quizDetails = secondResponse.data.data;
+						updatedQuizSet = {
+							...updatedQuizSet,
+							questions: quizDetails.questions,
+						};
+					} else {
+						throw new Error('Failed to fetch quiz details');
+					}
+
+					// Update state with the final data
+					setQuizSet(updatedQuizSet);
+				} else {
+					throw new Error('Failed to fetch quiz data');
+				}
+			} catch (err) {
+				setError('Unable to load quiz. Please try again later.');
+				console.error(err);
+			} finally {
+				setLoading(false);
+			}
+		};
+		fetchQuizSetAttempts();
+	}, [api, quizSetId, auth.user.id]);
+
+	if (loading) {
+		return (
+			<div className="h-[300px] text-3xl flex items-center justify-center">
+				Loading...
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="h-[300px] text-3xl flex items-center justify-center text-red-500">
+				{error}
+			</div>
+		);
+	}
+
+	if (!quizSet) {
+		return null;
+	}
+
 	return (
 		<div className="bg-background text-foreground min-h-screen">
 			<div className="flex min-h-screen overflow-hidden">
-				<img
-					src={LogoWhite}
-					alt=""
-					className="max-h-11 fixed left-6 top-6 z-50"
-				/>
 				{/* <!-- Left side --> */}
 				<div className="max-h-screen overflow-hidden hidden lg:flex lg:w-1/2 bg-primary flex-col justify-center p-12 relative">
 					<div>
 						<div className="text-white">
 							<div>
-								<h2 className="text-4xl font-bold mb-2">React Hooks Quiz</h2>
-								<p>
-									A quiz on React hooks like useState, useEffect, and
-									useContext.{' '}
-								</p>
+								<h2 className="text-4xl font-bold mb-2">
+									{quizSet.quiz.title}
+								</h2>
+								<p>{quizSet.quiz.description}</p>
 							</div>
 
 							<div className="my-6 flex items-center  ">
 								<div className="w-1/2">
 									<div className="flex gap-6 my-6">
 										<div>
-											<p className="font-semibold text-2xl my-0">10</p>
+											<p className="font-semibold text-2xl my-0">
+												{quizSet.quiz.total_questions}
+											</p>
 											<p className="text-gray-300">Questions</p>
 										</div>
 
 										<div>
-											<p className="font-semibold text-2xl my-0">8</p>
+											<p className="font-semibold text-2xl my-0">
+												{quizSet.userAttempt.correctCount}
+											</p>
 											<p className="text-gray-300">Correct</p>
 										</div>
 
 										<div>
-											<p className="font-semibold text-2xl my-0">2</p>
+											<p className="font-semibold text-2xl my-0">
+												{quizSet.quiz.total_questions -
+													quizSet.userAttempt.correctCount}
+											</p>
 											<p className="text-gray-300">Wrong</p>
 										</div>
 									</div>
 
-									<a
-										href="./leaderboard_page.html"
+									<Link
+										to={`/leaderboard/${quizSetId}`}
 										className=" bg-secondary py-3 rounded-md hover:bg-secondary/90 transition-colors text-lg font-medium underline text-white"
 									>
 										View Leaderboard
-									</a>
+									</Link>
 								</div>
 
 								<div className="w-1/2 bg-primary/80 rounded-md border border-white/20 flex items-center p-4">
@@ -53,9 +124,17 @@ const Result = () => {
 										<p>Your Mark</p>
 									</div>
 									<div>
-										<img
-											src="./assets/icons/circular-progressbar.svg"
-											alt=""
+										<CircularProgressbar
+											value={Math.round(
+												(quizSet.userAttempt.marksObtained /
+													quizSet.quiz.total_marks) *
+													100
+											)}
+											text={`${Math.round(
+												(quizSet.userAttempt.marksObtained /
+													quizSet.quiz.total_marks) *
+													100
+											)}%`}
 											className="h-20"
 										/>
 									</div>
@@ -69,169 +148,16 @@ const Result = () => {
 				<div className="max-h-screen md:w-1/2 flex items-center justify-center h-full p-8">
 					<div className="h-[calc(100vh-50px)] overflow-y-scroll ">
 						<div className="px-4">
-							{/* <!-- Question One --> */}
-							<div className="rounded-lg overflow-hidden shadow-sm mb-4">
-								<div className="bg-white p-6 !pb-2">
-									<div className="flex justify-between items-center mb-4">
-										<h3 className="text-lg font-semibold">
-											1. Which of the following is NOT a binary tree traversal
-											method?
-										</h3>
-									</div>
-									<div className="space-y-2">
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer1"
-												className="form-radio text-buzzr-purple"
-												checked
-											/>
-											<span>Inorder</span>
-										</label>
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer1"
-												className="form-radio text-buzzr-purple"
-											/>
-											<span>Preorder</span>
-										</label>
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer1"
-												className="form-radio text-buzzr-purple"
-											/>
-											<span>Postorder</span>
-										</label>
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer1"
-												className="form-radio text-buzzr-purple"
-											/>
-											<span>Crossorder</span>
-										</label>
-									</div>
-								</div>
-								<div className="flex space-x-4 bg-primary/10 px-6 py-2">
-									<button className="text-red-600 hover:text-red-800 font-medium">
-										Delete
-									</button>
-									<button className="text-primary hover:text-primary/80 font-medium">
-										Edit Question
-									</button>
-								</div>
-							</div>
-
-							{/* <!-- Question Two --> */}
-							<div className="rounded-lg overflow-hidden shadow-sm mb-4">
-								<div className="bg-white p-6 !pb-2">
-									<div className="flex justify-between items-center mb-4">
-										<h3 className="text-lg font-semibold">
-											2. What is the maximum number of nodes at level
-											&apos;L&apos; in a binary tree?
-										</h3>
-									</div>
-									<div className="space-y-2">
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer2"
-												className="form-radio text-buzzr-purple"
-												checked
-											/>
-											<span>2^L</span>
-										</label>
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer2"
-												className="form-radio text-buzzr-purple"
-											/>
-											<span>L</span>
-										</label>
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer2"
-												className="form-radio text-buzzr-purple"
-											/>
-											<span>2^(L-1)</span>
-										</label>
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer2"
-												className="form-radio text-buzzr-purple"
-											/>
-											<span>2L</span>
-										</label>
-									</div>
-								</div>
-								<div className="flex space-x-4 bg-primary/10 px-6 py-2">
-									<button className="text-red-600 hover:text-red-800 font-medium">
-										Delete
-									</button>
-									<button className="text-primary hover:text-primary/80 font-medium">
-										Edit Question
-									</button>
-								</div>
-							</div>
-
-							{/* <!-- Question 3 --> */}
-							<div className="rounded-lg overflow-hidden shadow-sm mb-4">
-								<div className="bg-white p-6 !pb-2">
-									<div className="flex justify-between items-center mb-4">
-										<h3 className="text-lg font-semibold">
-											3. What is the height of an empty binary tree?
-										</h3>
-									</div>
-									<div className="space-y-2">
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer3"
-												className="form-radio text-buzzr-purple"
-												checked
-											/>
-											<span>0</span>
-										</label>
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer3"
-												className="form-radio text-buzzr-purple"
-											/>
-											<span>-1</span>
-										</label>
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer3"
-												className="form-radio text-buzzr-purple"
-											/>
-											<span>1</span>
-										</label>
-										<label className="flex items-center space-x-3">
-											<input
-												type="radio"
-												name="answer3"
-												className="form-radio text-buzzr-purple"
-											/>
-											<span>Undefined</span>
-										</label>
-									</div>
-								</div>
-								<div className="flex space-x-4 bg-primary/10 px-6 py-2">
-									<button className="text-red-600 hover:text-red-800 font-medium">
-										Delete
-									</button>
-									<button className="text-primary hover:text-primary/80 font-medium">
-										Edit Question
-									</button>
-								</div>
-							</div>
+							{quizSet.questions.map((question, index) => (
+								<AnswerCard
+									key={question.id}
+									question={question}
+									questionNumber={index + 1}
+									submittedAnswer={quizSet.userAttempt.submitted_answers.find(
+										(answer) => answer.question_id === question.id
+									)}
+								/>
+							))}
 						</div>
 					</div>
 				</div>
