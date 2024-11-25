@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks';
+import { Toast } from '../../sweetalert/Toast';
 import Field from '../shared/Field';
 
 const LoginForm = () => {
@@ -13,6 +14,7 @@ const LoginForm = () => {
 		setError,
 	} = useForm();
 	const navigate = useNavigate();
+
 	const submitForm = async (formData) => {
 		try {
 			const response = await axios.post(
@@ -29,6 +31,10 @@ const LoginForm = () => {
 					} else {
 						navigate('/');
 					}
+					Toast.fire({
+						icon: 'success',
+						title: 'Welcome to Quizzes',
+					});
 				} else {
 					throw new Error('Something went wrong!');
 				}

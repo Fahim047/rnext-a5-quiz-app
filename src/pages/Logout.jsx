@@ -2,10 +2,9 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 
 const Logout = () => {
-	const { auth, setAuth } = useAuth();
+	const { setAuth } = useAuth();
 	setAuth(null);
-	console.log(auth);
-	return <Navigate to="/login" />;
+	return <Navigate to="/" />;
 };
 
 export default Logout;

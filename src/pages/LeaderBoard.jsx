@@ -1,6 +1,7 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Avatar from '../assets/avatar.webp';
 import LeaderboardItem from '../components/LeaderboardItem';
+import LeaderboardSkeleton from '../components/skeletons/LeaderboardSkeleton';
 import { useAuth } from '../hooks';
 import useQuizSetData from '../hooks/useQuizSetData';
 const LeaderBoard = () => {
@@ -10,7 +11,7 @@ const LeaderBoard = () => {
 	console.log(quizData);
 
 	if (loading) {
-		return <div>Loading...</div>;
+		return <LeaderboardSkeleton />;
 	}
 	if (error) {
 		return (
@@ -50,11 +51,17 @@ const LeaderBoard = () => {
 								<p className="text-2xl font-bold">{quizData.wrongCount}</p>
 							</div>
 						</div>
+						<Link
+							to={`/result/${quizSetId}`}
+							className=" bg-secondary py-3 rounded-md hover:bg-secondary/90 transition-colors text-lg font-medium underline text-white"
+						>
+							View Result
+						</Link>
 					</div>
 					{/* <!-- Right Column --> */}
 					<div>
 						<h1 className="text-2xl font-bold">Leaderboard</h1>
-						<p className="mb-6">React Hooks Quiz</p>
+						<p className="mb-6">{quizData.title}</p>
 						<ul className="space-y-4">
 							{/* <!-- Leaderboard Item --> */}
 							{quizData.leaderboard.map((item) => (

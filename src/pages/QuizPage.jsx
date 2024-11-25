@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import QuestionForm from '../components/QuestionForm';
 import QuizStats from '../components/QuizStats';
+import QuizTakingPageSkeleton from '../components/skeletons/QuizTakingPageSkeleton';
 import { useAxios } from '../hooks';
 
 const QuizPage = () => {
@@ -43,11 +44,7 @@ const QuizPage = () => {
 	};
 
 	if (loading) {
-		return (
-			<div className="h-[300px] text-3xl flex items-center justify-center">
-				Loading...
-			</div>
-		);
+		return <QuizTakingPageSkeleton />;
 	}
 
 	if (error) {

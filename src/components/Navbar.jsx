@@ -1,19 +1,9 @@
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Logo from '../assets/logo.svg';
 import { useAuth } from '../hooks';
-const navLinks = [
-	{
-		id: 1,
-		title: 'Home',
-		route: '/',
-	},
-	{
-		id: 2,
-		title: 'Leaderboard',
-		route: '/leaderboard',
-	},
-];
+import { Toast } from '../sweetalert/Toast';
+
 const Navbar = () => {
 	const { auth } = useAuth();
 	const navigate = useNavigate();
@@ -28,6 +18,10 @@ const Navbar = () => {
 		}).then((result) => {
 			if (result.isConfirmed) {
 				navigate('/logout');
+				Toast.fire({
+					icon: 'success',
+					title: 'Logged out successfully',
+				});
 			}
 		});
 	};
@@ -37,22 +31,6 @@ const Navbar = () => {
 				<Link to="/">
 					<img src={Logo} className="h-7" alt="Quizzes" />
 				</Link>
-				<div className="flex gap-4">
-					{navLinks.map((link) => (
-						<NavLink
-							to={link.route}
-							key={link.id}
-							className={({ isActive }) =>
-								isActive
-									? 'text-primary underline underline-offset-4 decoration-2'
-									: ''
-							}
-							style={{ fontFamily: 'Jaro' }}
-						>
-							{link.title}
-						</NavLink>
-					))}
-				</div>
 				<div>
 					{auth?.user ? (
 						<button

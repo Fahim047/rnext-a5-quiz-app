@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { useAxios } from '../hooks';
 
 const QuestionForm = ({
@@ -31,7 +32,14 @@ const QuestionForm = ({
 				answers: userAnswers,
 			});
 
-			navigate(`/result/${quizSetId}`);
+			if (response.status === 200) {
+				Swal.fire({
+					icon: 'success',
+					title: 'Success',
+					text: 'Quiz submitted successfully',
+					confirmButtonText: 'Ok',
+				}).then(() => navigate(`/result/${quizSetId}`));
+			}
 		} catch (err) {
 			console.log(err);
 		}
