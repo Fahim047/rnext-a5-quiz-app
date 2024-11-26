@@ -1,22 +1,60 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Cube from '../icons/Cube';
+import Ellipsis from '../icons/Ellipsis';
 
 const QuizSetCard = ({ quizSet }) => {
-	// console.log(quizSet);
+	const navigate = useNavigate();
+	const [showMenu, setShowMenu] = useState(false);
+
+	const toggleMenu = () => setShowMenu(!showMenu);
+
 	return (
-		<Link to={`./quiz-set-entry-page/${quizSet.id}`}>
-			<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 group">
-				<div className="text-buzzr-purple mb-4 group-hover:scale-105 transition-all">
-					<Cube />
+		<div className="relative bg-white p-6 rounded-lg shadow-md border border-gray-200">
+			{/* Top Section */}
+			<div className="flex justify-between items-center mb-4">
+				<Cube className="text-buzzr-purple" />
+				<div className="relative">
+					<button
+						onClick={toggleMenu}
+						className="p-2 rounded-full hover:bg-gray-100 focus:outline-none"
+					>
+						<Ellipsis className="text-gray-600" />
+					</button>
+					{showMenu && (
+						<div
+							role="menu"
+							aria-label="Quiz set menu"
+							className="absolute right-0 mt-2 w-32 bg-white shadow-lg rounded-lg border border-gray-200 z-50"
+						>
+							<button
+								className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+								onClick={() => navigate(`./quiz-set/${quizSet.id}`)}
+							>
+								Edit
+							</button>
+							<button
+								className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+								onClick={toggleMenu}
+							>
+								Cancel
+							</button>
+						</div>
+					)}
 				</div>
-				<h3 className="font-semibold text-lg mb-2 group-hover:scale-105 transition-all">
+			</div>
+
+			{/* Card Content */}
+			<div
+				className="cursor-pointer"
+				onClick={() => navigate(`./quiz-set-entry-page/${quizSet.id}`)}
+			>
+				<h3 className="font-semibold text-lg mb-2 text-gray-800 hover:text-buzzr-purple">
 					{quizSet.title}
 				</h3>
-				<p className="text-gray-600 text-sm group-hover:scale-105 transition-all">
-					{quizSet.description}
-				</p>
+				<p className="text-sm text-gray-600">{quizSet.description}</p>
 			</div>
-		</Link>
+		</div>
 	);
 };
 

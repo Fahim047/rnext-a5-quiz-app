@@ -6,9 +6,9 @@ import { useAxios } from '../../hooks';
 import { Toast } from '../../sweetalert/Toast';
 
 const QuizSetEntryPage = () => {
-	const [quizSet, setQuizSet] = useState({});
+	const [quizSet, setQuizSet] = useState(null);
 	const [editingQuestion, setEditingQuestion] = useState(null);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 	const { quizSetId } = useParams();
 	const { api } = useAxios();
 	const handleStatusChange = async () => {
@@ -30,7 +30,7 @@ const QuizSetEntryPage = () => {
 	};
 	useEffect(() => {
 		const fetchQuizSets = async () => {
-			setLoading(true);
+			// setLoading(true);
 			try {
 				const response = await api.get('/api/admin/quizzes');
 				if (response.status === 200) {
