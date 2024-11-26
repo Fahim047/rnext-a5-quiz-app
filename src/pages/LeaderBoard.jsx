@@ -63,7 +63,7 @@ const LeaderBoard = () => {
 						<ul className="space-y-4">
 							{/* <!-- Leaderboard Item --> */}
 							{quizData.leaderboard.map((item) => (
-								<LeaderboardItem key={item.email} data={item} />
+								<LeaderboardItem key={item.id} item={item} />
 							))}
 						</ul>
 					</div>
