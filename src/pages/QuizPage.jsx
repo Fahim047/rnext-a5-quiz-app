@@ -4,6 +4,7 @@ import QuestionForm from '../components/QuestionForm';
 import QuizStats from '../components/QuizStats';
 import QuizTakingPageSkeleton from '../components/skeletons/QuizTakingPageSkeleton';
 import { useAxios } from '../hooks';
+import { shuffleArray } from '../utils';
 
 const QuizPage = () => {
 	const [quizSet, setQuizSet] = useState(null);
@@ -22,7 +23,10 @@ const QuizPage = () => {
 			try {
 				const response = await api.get(`/api/quizzes/${quizSetId}`);
 				if (response.status === 200) {
-					setQuizSet(response.data.data);
+					const data = response.data.data;
+					// Shuffle questions after fetching the quiz
+					data.questions = shuffleArray(data.questions);
+					setQuizSet(data);
 				} else {
 					throw new Error('Failed to fetch quiz data');
 				}

@@ -96,6 +96,19 @@ const getUserChoiceIndicator = (option, correctAnswer, submittedAnswer) => {
 	return null;
 };
 
+const shuffleArray = (array) => {
+	const shuffledArray = [...array];
+	for (let i = shuffledArray.length - 1; i > 0; i--) {
+		const randomIndex = Math.floor(Math.random() * (i + 1));
+		// Swapping elements with destructuring
+		[shuffledArray[i], shuffledArray[randomIndex]] = [
+			shuffledArray[randomIndex],
+			shuffledArray[i],
+		];
+	}
+	return shuffledArray;
+};
+
 export {
 	calculateCorrectCount,
 	calculateLeaderboard,
@@ -103,4 +116,5 @@ export {
 	getOptionClass,
 	getUserChoiceIndicator,
 	processAttempts,
+	shuffleArray,
 };

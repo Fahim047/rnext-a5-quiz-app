@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useAxios } from '../hooks';
+import { shuffleArray } from '../utils';
 
 const QuestionForm = ({
 	currentQuestionIndex,
@@ -13,6 +15,14 @@ const QuestionForm = ({
 	const { api } = useAxios();
 	const { quizSetId } = useParams();
 	const navigate = useNavigate();
+	const [shuffledOptions, setShuffledOptions] = useState([]);
+
+	useEffect(() => {
+		if (question?.options) {
+			setShuffledOptions(shuffleArray([...question.options]));
+		}
+	}, [question]);
+
 	const handleNext = () => {
 		if (currentQuestionIndex < totalQuestions - 1) {
 			setCurrentQuestionIndex((prev) => prev + 1);
@@ -64,7 +74,7 @@ const QuestionForm = ({
 					{`${currentQuestionIndex + 1}. ${question.question}`}
 				</h3>
 				<div className="grid grid-cols-2 gap-4 mb-6">
-					{question?.options?.map((option, index) => (
+					{shuffledOptions.map((option, index) => (
 						<label
 							key={index}
 							className="flex items-center space-x-3 py-3 px-4 bg-primary/5 rounded-md text-lg"
