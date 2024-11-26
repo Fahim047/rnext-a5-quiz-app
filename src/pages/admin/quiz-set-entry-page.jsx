@@ -26,6 +26,10 @@ const QuizSetEntryPage = () => {
 			}
 		} catch (error) {
 			console.log(error);
+			Toast.fire({
+				icon: 'error',
+				text: 'Something went wrong',
+			});
 		}
 	};
 	useEffect(() => {

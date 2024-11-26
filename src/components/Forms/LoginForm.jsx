@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks';
 import { Toast } from '../../sweetalert/Toast';
 import Field from '../shared/Field';
@@ -31,17 +31,13 @@ const LoginForm = () => {
 					setAuth({ user, accessToken, refreshToken });
 					if (user?.role === 'admin' && formData.admin) {
 						navigate('/admin');
-						Toast.fire({
-							icon: 'success',
-							title: 'Welcome to Quizzes Admin Panel',
-						});
 					} else {
 						navigate('/');
-						Toast.fire({
-							icon: 'success',
-							title: 'Welcome to Quizzes',
-						});
 					}
+					Toast.fire({
+						icon: 'success',
+						title: `Welcome, ${user.full_name}`,
+					});
 				} else {
 					throw new Error('Something went wrong!');
 				}
@@ -50,7 +46,7 @@ const LoginForm = () => {
 			console.log(error);
 			setError('root.random', {
 				type: 'random',
-				message: error.message,
+				message: error?.response?.data?.message,
 			});
 		}
 	};
@@ -86,6 +82,11 @@ const LoginForm = () => {
 					placeholder="Password"
 				/>
 			</Field>
+			<div className="px-2 -mt-2 mb-2 text-end">
+				<Link to="/login" className="text-red-500 underline underline-offset-2">
+					Forgot Password?
+				</Link>
+			</div>
 			<div className="mb-6 flex gap-2 items-center">
 				<input
 					{...register('admin')}

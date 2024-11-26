@@ -24,7 +24,6 @@ const Home = () => {
 		};
 		fetchQuizSets();
 	}, [api]);
-	console.log(quizSets);
 	if (loading) {
 		return <HomePageSkeleton />;
 	}

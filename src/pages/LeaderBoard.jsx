@@ -62,7 +62,7 @@ const LeaderBoard = () => {
 						<p className="mb-6">{quizData.title}</p>
 						<ul className="space-y-4">
 							{/* <!-- Leaderboard Item --> */}
-							{quizData.leaderboard.map((item) => (
+							{quizData.leaderboard.slice(0, 5).map((item) => (
 								<LeaderboardItem key={item.id} item={item} />
 							))}
 						</ul>

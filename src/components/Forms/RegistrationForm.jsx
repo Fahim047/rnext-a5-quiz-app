@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import Field from '../shared/Field';
 
 const RegistrationForm = () => {
@@ -14,42 +15,30 @@ const RegistrationForm = () => {
 	} = useForm();
 
 	const submitForm = async (formData) => {
-		console.log(formData);
+		// console.log(formData);
 		const formattedData = {
 			full_name: formData.name,
 			email: formData.email,
 			password: formData.password,
 			role: formData.role ? 'admin' : 'user',
 		};
-		console.log(formattedData);
 		try {
 			const response = await axios.post(
 				`${import.meta.env.VITE_API_BASE_URL}/api/auth/register`,
 				formattedData
 			);
-
-			if (response.status === 200) {
-				console.log(response);
-				// const { user, tokens } = response.data.data;
-				// if (tokens) {
-				// 	const { accessToken, refreshToken } = tokens;
-				// 	// Assuming setAuth is available via context
-				// 	setAuth({ user, accessToken, refreshToken });
-
-				// 	// Redirect based on user role
-				// 	if (user?.role === 'admin' && formData.admin) {
-				// 		navigate('/admin');
-				// 	} else {
-				// 		navigate('/');
-				// 	}
+			if (response.status === 201) {
+				Swal.fire('success', 'Registration Successful!', 'success').then(() =>
+					navigate('/login')
+				);
 			} else {
-				throw new Error('Authentication failed! Please try again.');
+				throw new Error('Registration failed! Please try again.');
 			}
 		} catch (error) {
 			console.error(error);
 			setError('root.serverError', {
 				type: 'serverError',
-				message: error.message,
+				message: error?.response?.data?.message,
 			});
 		}
 	};
@@ -77,10 +66,6 @@ const RegistrationForm = () => {
 					<input
 						{...register('email', {
 							required: 'Email is required',
-							// pattern: {
-							// 	value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-							// 	message: 'Invalid email format',
-							// },
 						})}
 						type="email"
 						id="email"
@@ -141,7 +126,10 @@ const RegistrationForm = () => {
 					Register as Admin
 				</label>
 			</div>
-
+			{/* Server Error */}
+			{errors.root?.serverError && (
+				<p className="text-red-500 mt-2">{errors.root.serverError.message}</p>
+			)}
 			{/* Submit Button */}
 			<button
 				type="submit"
@@ -149,11 +137,6 @@ const RegistrationForm = () => {
 			>
 				Create Account
 			</button>
-
-			{/* Server Error */}
-			{errors.root?.serverError && (
-				<p className="text-red-500 mt-2">{errors.root.serverError.message}</p>
-			)}
 		</form>
 	);
 };

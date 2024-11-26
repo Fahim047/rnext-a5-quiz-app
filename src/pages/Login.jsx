@@ -37,19 +37,14 @@ const Login = () => {
 							/>
 						</h2>
 						<h1 className="text-5xl font-bold mb-8">Sign in</h1>
-
 						<LoginForm />
-
-						<div className="text-center">
-							<a href="#" className="text-primary">
-								Forgot Password
-							</a>
-						</div>
-
-						<div className="mt-8">
-							<p className="text-center">
-								No Account ?{' '}
-								<Link to="/signup" className="text-primary">
+						<div className="mt-4">
+							<p className="text-center text-gray-500">
+								Don&apos;t have an Account?{' '}
+								<Link
+									to="/signup"
+									className="text-primary underline underline-offset-2"
+								>
 									Sign up
 								</Link>
 							</p>

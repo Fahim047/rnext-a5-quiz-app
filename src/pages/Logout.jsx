@@ -4,7 +4,7 @@ import { useAuth } from '../hooks';
 const Logout = () => {
 	const { setAuth } = useAuth();
 	setAuth(null);
-	return <Navigate to="/" />;
+	return <Navigate to="/login" />;
 };
 
 export default Logout;

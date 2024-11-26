@@ -26,7 +26,6 @@ const useQuizSetData = (quizSetId) => {
 				if (attemptsResponse.status === 200 && quizResponse.status === 200) {
 					const attemptsData = attemptsResponse.data.data;
 					const quizMetaData = quizResponse.data.data;
-					console.log(quizMetaData);
 
 					// Process leaderboard
 					const { leaderboard, currentUserPosition } = calculateLeaderboard(

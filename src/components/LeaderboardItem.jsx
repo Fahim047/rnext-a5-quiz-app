@@ -5,7 +5,7 @@ const LeaderboardItem = ({ item }) => {
 	const isCurrentUser = auth?.user.id === item.id;
 	return (
 		<li
-			className={`flex items-center justify-between rounded-sm p-2 ${
+			className={`flex items-center justify-between rounded-md p-2 ${
 				isCurrentUser ? 'bg-yellow-200' : ''
 			}`}
 		>
@@ -16,7 +16,9 @@ const LeaderboardItem = ({ item }) => {
 					className="object-cover w-10 h-10 rounded-full mr-4"
 				/>
 				<div>
-					<h3 className="font-semibold">{item.name}</h3>
+					<h3 className="font-semibold">{`${item.name} ${
+						isCurrentUser ? '(you)' : ''
+					}`}</h3>
 					<p className="text-sm text-gray-500">{item.position}</p>
 				</div>
 			</div>

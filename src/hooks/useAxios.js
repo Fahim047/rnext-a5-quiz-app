@@ -30,7 +30,7 @@ const useAxios = () => {
 						}
 					);
 					const tokens = response.data.data;
-					console.log('New tokens:', tokens);
+					// console.log('New tokens:', tokens);
 					setAuth({
 						...auth,
 						accessToken: tokens.accessToken,

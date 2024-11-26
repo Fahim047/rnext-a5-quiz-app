@@ -25,7 +25,11 @@ const Dashboard = () => {
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 				<CreateQuizSetCard />
 				{quizSets?.map((quizSet) => (
-					<QuizSetCard key={quizSet.id} quizSet={quizSet} />
+					<QuizSetCard
+						key={quizSet.id}
+						quizSet={quizSet}
+						setQuizSets={setQuizSets}
+					/>
 				))}
 			</div>
 		</main>
