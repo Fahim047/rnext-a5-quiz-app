@@ -6,7 +6,7 @@ const Greetings = () => {
 	return (
 		<>
 			{auth?.accessToken && (
-				<section className="text-center mb-12">
+				<section className="text-center py-6">
 					<img
 						src={Avatar}
 						alt="Profile"

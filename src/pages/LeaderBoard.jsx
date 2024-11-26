@@ -2,13 +2,11 @@ import { Link, useParams } from 'react-router-dom';
 import Avatar from '../assets/avatar.webp';
 import LeaderboardItem from '../components/LeaderboardItem';
 import LeaderboardSkeleton from '../components/skeletons/LeaderboardSkeleton';
-import { useAuth } from '../hooks';
-import useQuizSetData from '../hooks/useQuizSetData';
+import { useAuth, useQuizSetData } from '../hooks';
 const LeaderBoard = () => {
 	const { auth } = useAuth();
 	const { quizSetId } = useParams();
 	const { quizData, loading, error } = useQuizSetData(quizSetId);
-	console.log(quizData);
 
 	if (loading) {
 		return <LeaderboardSkeleton />;

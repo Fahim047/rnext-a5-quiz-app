@@ -2,7 +2,7 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Link, useParams } from 'react-router-dom';
 import AnswerCard from '../components/result/AnswerCard';
-import useQuizSetData from '../hooks/useQuizSetData';
+import { useQuizSetData } from '../hooks';
 const Result = () => {
 	const { quizSetId } = useParams();
 	const { quizData, loading, error } = useQuizSetData(quizSetId);

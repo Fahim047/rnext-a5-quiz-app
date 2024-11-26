@@ -26,8 +26,8 @@ const Navbar = () => {
 		});
 	};
 	return (
-		<header className="backdrop-blur-md py-3 sticky top-0 z-50 mb-12">
-			<div className="flex justify-between items-center">
+		<header className="backdrop-blur-md bg-white drop-shadow-sm py-2 sticky top-0 z-50">
+			<div className="container py-3 mx-auto flex justify-between items-center">
 				<Link to="/">
 					<img src={Logo} className="h-7" alt="Quizzes" />
 				</Link>
@@ -35,7 +35,7 @@ const Navbar = () => {
 					{auth?.user ? (
 						<button
 							onClick={handleLogoutClick}
-							className="px-4 py-2 rounded hover:bg-primary hover:text-white transition-colors"
+							className="px-4 py-2 rounded border border-primary hover:bg-primary hover:text-white transition-colors"
 							style={{ fontFamily: 'Jaro' }}
 						>
 							Logout
@@ -43,7 +43,7 @@ const Navbar = () => {
 					) : (
 						<Link
 							to="/login"
-							className="px-4 py-2 rounded hover:bg-primary hover:text-white transition-colors"
+							className="px-4 py-2 rounded bg-primary border border-transparent text-white hover:bg-transparent hover:text-primary hover:border-primary transition-colors"
 							style={{ fontFamily: 'Jaro' }}
 						>
 							Login

@@ -1,12 +1,14 @@
 import Avatar from '../assets/avatar.webp';
+import { useAuth } from '../hooks';
 import QuizStatBadge from './QuizStatBadge';
 
 const QuizStats = ({ quizSet, userAnswers }) => {
+	const { auth } = useAuth();
 	if (!quizSet) return null;
 
 	const { title = 'Untitled Quiz', description = 'N/A', stats = {} } = quizSet;
-	const { total_questions = 0 } = stats;
 
+	const { total_questions = 0 } = stats;
 	const participation = Object.keys(userAnswers).length;
 	const remaining = total_questions - participation;
 
@@ -41,7 +43,7 @@ const QuizStats = ({ quizSet, userAnswers }) => {
 					alt="Quiz Creator"
 					className="w-10 h-10 rounded-full mr-3 object-cover"
 				/>
-				<span className="text-black font-semibold">Saad Hasan</span>
+				<span className="text-black font-semibold">{auth?.user.full_name}</span>
 			</div>
 		</div>
 	);

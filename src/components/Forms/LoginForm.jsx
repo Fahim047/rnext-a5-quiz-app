@@ -23,18 +23,25 @@ const LoginForm = () => {
 			);
 			if (response.status === 200) {
 				const { user, tokens } = response.data.data;
+				if (user?.role === 'user' && formData.admin) {
+					throw new Error('You are not an admin');
+				}
 				if (tokens) {
 					const { accessToken, refreshToken } = tokens;
 					setAuth({ user, accessToken, refreshToken });
 					if (user?.role === 'admin' && formData.admin) {
 						navigate('/admin');
+						Toast.fire({
+							icon: 'success',
+							title: 'Welcome to Quizzes Admin Panel',
+						});
 					} else {
 						navigate('/');
+						Toast.fire({
+							icon: 'success',
+							title: 'Welcome to Quizzes',
+						});
 					}
-					Toast.fire({
-						icon: 'success',
-						title: 'Welcome to Quizzes',
-					});
 				} else {
 					throw new Error('Something went wrong!');
 				}

@@ -1,4 +1,5 @@
 import useAuth from './useAuth';
 import useAxios from './useAxios';
-import useProfile from './useProfile';
-export { useAuth, useAxios, useProfile };
+import useLocalStorage from './useLocalStorage';
+import useQuizSetData from './useQuizSetData';
+export { useAuth, useAxios, useLocalStorage, useQuizSetData };
